@@ -1,0 +1,12 @@
+{
+  "name": "Arturo Gallardo · Asesoría patrimonial y seguros",
+  "short_name": "Arturo Gallardo",
+  "icons": [
+    { "src": "./app-icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "./favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "theme_color": "#2f404a",
+  "background_color": "#2f404a",
+  "display": "browser",
+  "lang": "es-MX"
+}
