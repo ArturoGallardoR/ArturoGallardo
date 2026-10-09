@@ -31,7 +31,7 @@ export const SITE = {
 
   // Canales de respaldo si la agenda no carga. Deja vacío lo que no aplique.
   contact: {
-    whatsapp: '', // solo dígitos con lada de país, p. ej. '5215512345678'
+    whatsapp: '523322435972', // +52 33 2243 5972 (solo dígitos, con lada de país)
     email: '',
   },
 
