@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Arturo Gallardo · Vivir es increíble</title>
+    <meta name="description" content="Agenda una llamada de 15 minutos sin costo con Arturo Gallardo, asesor patrimonial GNP. Platicamos de tus planes y te explico cómo protegerlos." />
+    <meta name="theme-color" content="#2f404a" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="./app-icon-512.png" />
+    <link rel="manifest" href="./site.webmanifest" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:title" content="Arturo Gallardo · Vivir es increíble" />
+    <meta property="og:description" content="15 minutos para platicar de tus planes y de cómo cuidarlos. Sin costo y sin compromiso." />
+    <meta property="og:image" content="./og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preload" as="image" href="./video/hero-poster.jpg" />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+    <!-- Loader: el monograma se dibuja con un solo trazo -->
+    <div class="loader" aria-hidden="true">
+      <svg class="loader__mark" viewBox="-2 14 102 88">
+        <path class="loader__ghost" data-symbol-fill />
+        <path class="loader__stroke" data-symbol-stroke stroke-width="14" fill="none" />
+        <path class="loader__bar" data-symbol-bar stroke-width="12" fill="none" />
+      </svg>
+      <p class="loader__count"><span data-loader-count>0</span>%</p>
+      <p class="loader__line">Vivir es increíble</p>
+    </div>
+
+    <!-- Puntero personalizado -->
+    <div class="cursor" aria-hidden="true">
+      <div class="cursor__dot"></div>
+      <div class="cursor__ring"><span class="cursor__label"></span></div>
+    </div>
+
+    <header class="nav" data-nav>
+      <a class="nav__logo" href="#inicio" aria-label="Arturo Gallardo, inicio">
+        <svg viewBox="-214 -16 1666 132" role="img" aria-hidden="true">
+          <path class="logo-symbol" data-lockup-symbol />
+          <path class="logo-word" data-lockup-wordmark />
+        </svg>
+      </a>
+      <nav class="nav__links" aria-label="Principal">
+        <a href="#por-que">¿Para qué sirve?</a>
+        <a href="#planes">Planes</a>
+        <a href="#sobre-mi">Sobre mí</a>
+        <a href="#preguntas">Preguntas</a>
+      </nav>
+      <a class="btn btn--primary btn--sm nav__cta" href="#agenda" data-cursor="Agendar" data-magnetic>
+        Agenda 15 min
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu-movil" aria-label="Abrir menú" data-menu-toggle>
+        <span></span><span></span>
+      </button>
+    </header>
+
+    <div class="menu" id="menu-movil" data-menu hidden>
+      <a href="#por-que">¿Para qué sirve?</a>
+      <a href="#planes">Planes</a>
+      <a href="#sobre-mi">Sobre mí</a>
+      <a href="#preguntas">Preguntas</a>
+      <a class="btn btn--primary" href="#agenda">Agenda 15 min</a>
+    </div>
+
+    <main id="contenido">
+      <!-- HERO ─────────────────────────────────────────────── -->
+      <section class="hero band-dark" id="inicio" data-surface="dark">
+        <div class="hero__media" aria-hidden="true">
+          <video class="hero__video" autoplay muted loop playsinline preload="auto" poster="./video/hero-poster.jpg" data-hero-video>
+            <source src="./video/hero-1080.webm" type="video/webm" media="(min-width: 900px)" />
+            <source src="./video/hero-1080.mp4" type="video/mp4" media="(min-width: 900px)" />
+            <source src="./video/hero-720.mp4" type="video/mp4" />
+          </video>
+          <div class="hero__shade"></div>
+        </div>
+
+        <div class="hero__content container">
+          <p class="eyebrow hero__eyebrow" data-hero-fade>Arturo Gallardo · Asesor patrimonial GNP</p>
+          <h1 class="hero__title" aria-label="Vivir es increíble">
+            <span class="hero__line"><span data-hero-word>Vivir es</span></span>
+            <span class="hero__line"><span data-hero-word class="hero__accent">increíble.</span></span>
+          </h1>
+          <p class="hero__lead" data-hero-fade>
+            Y vale la pena cuidarlo. En una llamada de 15 minutos platicamos de tus planes y te explico, sin rodeos, cómo protegerlos.
+          </p>
+          <div class="hero__actions" data-hero-fade>
+            <a class="btn btn--primary btn--lg" href="#agenda" data-cursor="Agendar" data-magnetic>
+              Agenda tu llamada de 15 min
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </a>
+            <a class="btn btn--ghost btn--lg" href="#por-que" data-cursor="Ver">Primero quiero entender</a>
+          </div>
+          <ul class="hero__chips" data-hero-fade>
+            <li>Sin costo</li>
+            <li>Sin compromiso</li>
+            <li>Por videollamada</li>
+          </ul>
+        </div>
+
+        <a class="hero__scroll" href="#manifiesto" aria-label="Seguir bajando" data-hero-fade>
+          <span class="hero__scroll-line"></span>
+          <span>Desliza</span>
+        </a>
+      </section>
+
+      <!-- MARQUEE ─────────────────────────────────────────── -->
+      <div class="marquee" aria-hidden="true" data-surface="dark">
+        <div class="marquee__track" data-marquee>
+          <span>Vivir es increíble</span><i class="marquee__mark" data-mini-mark></i>
+          <span>Disfruta hoy, cuida mañana</span><i class="marquee__mark" data-mini-mark></i>
+          <span>Tu patrimonio, bien resguardado</span><i class="marquee__mark" data-mini-mark></i>
+          <span>Vivir es increíble</span><i class="marquee__mark" data-mini-mark></i>
+          <span>Disfruta hoy, cuida mañana</span><i class="marquee__mark" data-mini-mark></i>
+          <span>Tu patrimonio, bien resguardado</span><i class="marquee__mark" data-mini-mark></i>
+        </div>
+      </div>
+
+      <!-- MANIFIESTO ──────────────────────────────────────── -->
+      <section class="manifesto" id="manifiesto" data-surface="light">
+        <div class="container manifesto__grid">
+          <p class="eyebrow">[ 01 ] La idea</p>
+          <p class="manifesto__text" data-split-reveal>
+            La vida pasa rápido. Un primer depa, un hijo que crece, un negocio que por fin despega, un retiro que ya te imaginas.
+            No se trata de vivir con miedo a lo que pueda pasar. Se trata de disfrutar todo eso sabiendo que, si algo sale mal, no vas a empezar de cero.
+          </p>
+        </div>
+      </section>
+
+      <!-- EL HILO (three.js) ──────────────────────────────── -->
+      <section class="thread band-dark" id="hilo" data-surface="dark" data-thread>
+        <div class="thread__sticky">
+          <canvas class="thread__canvas" data-thread-canvas aria-hidden="true"></canvas>
+          <svg class="thread__fallback" viewBox="-2 14 102 88" aria-hidden="true"><path data-symbol-fill /></svg>
+          <div class="thread__ui container">
+            <p class="eyebrow thread__eyebrow">[ 02 ] Un solo hilo</p>
+            <ol class="thread__chapters">
+              <li class="chapter" data-chapter>
+                <span class="chapter__num">01</span>
+                <h2 class="chapter__title">Tu salud</h2>
+                <p>Si un día necesitas un hospital, que tu única preocupación sea recuperarte y no la cuenta.</p>
+              </li>
+              <li class="chapter" data-chapter>
+                <span class="chapter__num">02</span>
+                <h2 class="chapter__title">Tu familia</h2>
+                <p>Si un día llegas a faltar, que los tuyos puedan seguir con su vida y con sus planes.</p>
+              </li>
+              <li class="chapter" data-chapter>
+                <span class="chapter__num">03</span>
+                <h2 class="chapter__title">Tu futuro</h2>
+                <p>Un ahorro que crece contigo para que a los 65 tú decidas cómo quieres vivir.</p>
+              </li>
+              <li class="chapter" data-chapter>
+                <span class="chapter__num">04</span>
+                <h2 class="chapter__title">Lo tuyo</h2>
+                <p>Tu casa, tu coche y hasta tu perro. Todo lo que te costó trabajo tener.</p>
+              </li>
+              <li class="chapter chapter--final" data-chapter>
+                <h2 class="chapter__title">Todo cabe en un solo plan.</h2>
+                <a class="btn btn--primary" href="#agenda" data-cursor="Agendar" data-magnetic>Armemos el tuyo</a>
+              </li>
+            </ol>
+            <div class="thread__progress" aria-hidden="true"><span data-thread-progress></span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MITOS: educar sin asustar ───────────────────────── -->
+      <section class="myths" id="por-que" data-surface="light">
+        <div class="container">
+          <header class="section-head section-head--split">
+            <div>
+              <p class="eyebrow">[ 03 ] Lo que casi nadie te explica</p>
+              <h2 class="section-title" data-reveal>Lo que se dice y lo que pasa en realidad.</h2>
+            </div>
+            <p class="section-intro">
+              En México casi nadie nos enseñó para qué sirve protegerse. Por eso la palabra "seguro" suena a gasto, a letras chiquitas o a algo para cuando ya no estés. Toca cada tarjeta.
+            </p>
+          </header>
+          <ul class="myths__grid">
+            <li>
+              <button class="myth" type="button" aria-pressed="false" data-myth data-cursor="Voltear">
+                <span class="myth__face myth__front">
+                  <span class="myth__tag">Lo que se dice</span>
+                  <span class="myth__quote">"Eso es para cuando te mueres."</span>
+                  <span class="myth__hint" aria-hidden="true">Ver la realidad ↻</span>
+                </span>
+                <span class="myth__face myth__back">
+                  <span class="myth__tag">Lo que pasa</span>
+                  <span class="myth__text">Muchos planes te sirven en vida: pagan el hospital si te enfermas, te entregan un ahorro a los 65 o cubren la universidad de tus hijos.</span>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button class="myth" type="button" aria-pressed="false" data-myth data-cursor="Voltear">
+                <span class="myth__face myth__front">
+                  <span class="myth__tag">Lo que se dice</span>
+                  <span class="myth__quote">"Ya tengo IMSS, con eso me alcanza."</span>
+                  <span class="myth__hint" aria-hidden="true">Ver la realidad ↻</span>
+                </span>
+                <span class="myth__face myth__back">
+                  <span class="myth__tag">Lo que pasa</span>
+                  <span class="myth__text">Qué bueno que lo tienes. Un plan de gastos médicos mayores te puede abrir la puerta a hospitales privados en todo el país y te deja elegir a tu médico.</span>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button class="myth" type="button" aria-pressed="false" data-myth data-cursor="Voltear">
+                <span class="myth__face myth__front">
+                  <span class="myth__tag">Lo que se dice</span>
+                  <span class="myth__quote">"Es un gasto más."</span>
+                  <span class="myth__hint" aria-hidden="true">Ver la realidad ↻</span>
+                </span>
+                <span class="myth__face myth__back">
+                  <span class="myth__tag">Lo que pasa</span>
+                  <span class="myth__text">Hay planes donde una parte es ahorro que regresa a ti, y algunas primas se pueden deducir de impuestos. Revisamos cuáles aplican en tu caso.</span>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button class="myth" type="button" aria-pressed="false" data-myth data-cursor="Voltear">
+                <span class="myth__face myth__front">
+                  <span class="myth__tag">Lo que se dice</span>
+                  <span class="myth__quote">"Está carísimo."</span>
+                  <span class="myth__hint" aria-hidden="true">Ver la realidad ↻</span>
+                </span>
+                <span class="myth__face myth__back">
+                  <span class="myth__tag">Lo que pasa</span>
+                  <span class="myth__text">Hay planes que se ajustan a lo que puedes destinar cada mes. Empezamos por tu presupuesto y de ahí armamos.</span>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button class="myth" type="button" aria-pressed="false" data-myth data-cursor="Voltear">
+                <span class="myth__face myth__front">
+                  <span class="myth__tag">Lo que se dice</span>
+                  <span class="myth__quote">"Cuando lo necesitas, no te pagan."</span>
+                  <span class="myth__hint" aria-hidden="true">Ver la realidad ↻</span>
+                </span>
+                <span class="myth__face myth__back">
+                  <span class="myth__tag">Lo que pasa</span>
+                  <span class="myth__text">Casi siempre el problema es un plan mal elegido o un trámite hecho a solas. Te ayudo a elegir bien desde el inicio y te acompaño cuando toque usarlo.</span>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button class="myth" type="button" aria-pressed="false" data-myth data-cursor="Voltear">
+                <span class="myth__face myth__front">
+                  <span class="myth__tag">Lo que se dice</span>
+                  <span class="myth__quote">"Estoy joven, eso es para después."</span>
+                  <span class="myth__hint" aria-hidden="true">Ver la realidad ↻</span>
+                </span>
+                <span class="myth__face myth__back">
+                  <span class="myth__tag">Lo que pasa</span>
+                  <span class="myth__text">Tu edad y tu salud cuentan para el precio, así que hoy te sale mejor que dentro de diez años. Y un accidente no pregunta cuántos años tienes.</span>
+                </span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ESCENARIOS: ¿y si mañana…? ──────────────────────── -->
+      <section class="whatif band-dark" id="escenarios" data-surface="dark">
+        <div class="container">
+          <header class="section-head">
+            <p class="eyebrow">[ 04 ] Piénsalo un momento</p>
+            <h2 class="section-title section-title--light" data-reveal>¿Y si mañana…?</h2>
+          </header>
+          <div class="whatif__tabs" role="tablist" aria-label="Situaciones" data-whatif-tabs>
+            <button role="tab" type="button" aria-selected="true" aria-controls="whatif-panel" data-whatif="0">…me tienen que operar</button>
+            <button role="tab" type="button" aria-selected="false" aria-controls="whatif-panel" data-whatif="1">…llego a faltar</button>
+            <button role="tab" type="button" aria-selected="false" aria-controls="whatif-panel" data-whatif="2">…cumplo 65</button>
+            <button role="tab" type="button" aria-selected="false" aria-controls="whatif-panel" data-whatif="3">…mi hija entra a la universidad</button>
+            <button role="tab" type="button" aria-selected="false" aria-controls="whatif-panel" data-whatif="4">…chocan mi coche</button>
+          </div>
+          <div class="whatif__panel" id="whatif-panel" role="tabpanel" aria-live="polite" data-whatif-panel>
+            <article class="whatif__col whatif__col--without">
+              <p class="whatif__label">Sin un plan</p>
+              <p class="whatif__text" data-whatif-without></p>
+            </article>
+            <div class="whatif__divider" aria-hidden="true">
+              <svg viewBox="-2 14 102 88"><path data-symbol-fill /></svg>
+            </div>
+            <article class="whatif__col whatif__col--with">
+              <p class="whatif__label">Con un plan</p>
+              <p class="whatif__text" data-whatif-with></p>
+            </article>
+          </div>
+          <p class="whatif__note">Cada plan tiene sus propias coberturas, deducibles y condiciones. En la llamada vemos cuál te conviene.</p>
+        </div>
+      </section>
+
+      <!-- PLANES ──────────────────────────────────────────── -->
+      <section class="plans" id="planes" data-surface="light">
+        <div class="container">
+          <header class="section-head section-head--split">
+            <div>
+              <p class="eyebrow">[ 05 ] Lo que podemos cuidar</p>
+              <h2 class="section-title" data-reveal>Un plan a tu medida, no uno de catálogo.</h2>
+            </div>
+            <p class="section-intro">
+              Trabajo con todo el portafolio de GNP, así que la propuesta se arma alrededor de lo que tú quieres lograr. Elige lo que te interesa y lo platicamos en la llamada.
+            </p>
+          </header>
+          <ul class="plans__grid">
+            <li class="plan" data-plan="Salud (gastos médicos mayores)" data-tilt>
+              <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v5h5v6h-5v5H9v-5H4V9h5z" /></svg>
+              <h3>Salud</h3>
+              <p>Hospital, honorarios médicos, medicinas y estudios. Hay planes nacionales e internacionales, y tú eliges a tu médico.</p>
+              <button type="button" class="plan__cta" data-cursor="Agendar">Me interesa <span aria-hidden="true">→</span></button>
+            </li>
+            <li class="plan" data-plan="Proteger a mi familia (vida)" data-tilt>
+              <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" /></svg>
+              <h3>Tu familia</h3>
+              <p>Una suma para los tuyos si llegas a faltar, con un anticipo para los gastos funerarios para que no tengan que buscar dinero ese día.</p>
+              <button type="button" class="plan__cta" data-cursor="Agendar">Me interesa <span aria-hidden="true">→</span></button>
+            </li>
+            <li class="plan" data-plan="Ahorro para el retiro" data-tilt>
+              <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18l5-5 4 3 7-8M15 8h5v5" /></svg>
+              <h3>Retiro y ahorro</h3>
+              <p>Un ahorro garantizado para tus 65, en pesos que se actualizan con la inflación o en dólares. Tus aportaciones pueden ser deducibles.</p>
+              <button type="button" class="plan__cta" data-cursor="Agendar">Me interesa <span aria-hidden="true">→</span></button>
+            </li>
+            <li class="plan" data-plan="Educación de mis hijos" data-tilt>
+              <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-4 9 4-9 4-9-4zM7 11v5c3 2 7 2 10 0v-5" /></svg>
+              <h3>Educación</h3>
+              <p>Un ahorro para la escuela de tus hijos, nietos o sobrinos. Puedes empezar desde el embarazo.</p>
+              <button type="button" class="plan__cta" data-cursor="Agendar">Me interesa <span aria-hidden="true">→</span></button>
+            </li>
+            <li class="plan" data-plan="Auto, casa o mascota" data-tilt>
+              <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z" /></svg>
+              <h3>Coche, casa y mascota</h3>
+              <p>Tu coche o moto, tu casa, tu celular y hasta tu perro o gato. Lo que usas todos los días.</p>
+              <button type="button" class="plan__cta" data-cursor="Agendar">Me interesa <span aria-hidden="true">→</span></button>
+            </li>
+            <li class="plan" data-plan="Mi negocio" data-tilt>
+              <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16v11H4zM9 8V5h6v3M4 13h16" /></svg>
+              <h3>Tu negocio</h3>
+              <p>Protección para tu empresa y prestaciones que ayudan a que tu equipo se quede contigo.</p>
+              <button type="button" class="plan__cta" data-cursor="Agendar">Me interesa <span aria-hidden="true">→</span></button>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- CÓMO FUNCIONA ───────────────────────────────────── -->
+      <section class="steps" id="como-funciona" data-surface="light">
+        <div class="container">
+          <header class="section-head">
+            <p class="eyebrow">[ 06 ] Cómo funciona</p>
+            <h2 class="section-title" data-reveal>Tres pasos, y el primero dura 15 minutos.</h2>
+          </header>
+          <div class="steps__wrap">
+            <svg class="steps__line" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
+              <path data-steps-line d="M0 60 C 200 10, 300 110, 400 60 S 600 10, 800 60 S 1000 110, 1200 60" />
+            </svg>
+            <ol class="steps__list">
+              <li class="step" data-step>
+                <span class="step__num">1</span>
+                <h3>Agenda 15 minutos</h3>
+                <p>Escoge el horario que te quede. Te llega un correo con la liga de la videollamada.</p>
+              </li>
+              <li class="step" data-step>
+                <span class="step__num">2</span>
+                <h3>Platicamos</h3>
+                <p>Me cuentas qué quieres lograr, a quién quieres cuidar y cuánto puedes destinar. Yo te explico cómo funciona todo, en palabras normales.</p>
+              </li>
+              <li class="step" data-step>
+                <span class="step__num">3</span>
+                <h3>Ves tus opciones</h3>
+                <p>Te presento opciones claras y tú decides si seguimos. Nadie te va a presionar.</p>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- SOBRE MÍ ────────────────────────────────────────── -->
+      <section class="about" id="sobre-mi" data-surface="light">
+        <div class="container about__grid">
+          <figure class="about__portrait" data-parallax-wrap>
+            <div class="about__photo">
+              <svg class="about__mark" viewBox="-2 14 102 88" aria-hidden="true" data-parallax="-14"><path data-symbol-fill /></svg>
+              <img class="about__img" src="./img/arturo-gallardo.webp" width="900" height="1124" loading="lazy" decoding="async"
+                alt="Arturo Gallardo sonriendo con el pulgar arriba" data-parallax="6" />
+            </div>
+            <figcaption>Arturo Gallardo · Asesor patrimonial GNP</figcaption>
+          </figure>
+          <div class="about__copy">
+            <p class="eyebrow">[ 07 ] Sobre mí</p>
+            <h2 class="section-title" data-reveal>Hola, soy Arturo.</h2>
+            <p class="about__lead">
+              Soy asesor patrimonial y trabajo con GNP. Te ayudo a entender qué te conviene proteger y armamos un plan que de verdad puedas pagar.
+            </p>
+            <p>
+              Sé que la palabra "seguro" no emociona a nadie. A mí me interesa lo que hay detrás: que puedas viajar, emprender o ver crecer a tus hijos sin que un imprevisto te regrese al inicio.
+            </p>
+            <ul class="values">
+              <li><strong>Cercano</strong><span>Te hablo claro y te contesto cuando me necesitas.</span></li>
+              <li><strong>Firme</strong><span>Te acompaño en el trámite, sobre todo cuando toca usar tu póliza.</span></li>
+              <li><strong>Previsor</strong><span>Pensamos hoy en lo que vas a necesitar en diez o veinte años.</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- AGENDA ──────────────────────────────────────────── -->
+      <section class="booking band-dark" id="agenda" data-surface="dark">
+        <div class="container booking__grid">
+          <div class="booking__intro">
+            <p class="eyebrow eyebrow--light">[ 08 ] Agenda</p>
+            <h2 class="booking__title" data-reveal>Hablemos 15 minutos.</h2>
+            <p class="booking__lead">En esta llamada no tienes que decidir nada. Es para conocernos, resolver tus dudas y ver si te puedo ayudar.</p>
+            <ul class="booking__list">
+              <li><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" /><path d="M12 8v4l3 2" /></svg>Videollamada de 15 minutos</li>
+              <li><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4 10-10" /></svg>Sin costo y sin compromiso</li>
+              <li><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2" /><path d="M8 3v4M16 3v4M4 10h16" /></svg>Ves mis horarios libres y eliges</li>
+              <li><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8 6 8-6M4 7h16v11H4z" /></svg>Te llega confirmación y recordatorio</li>
+            </ul>
+            <p class="booking__interest" data-booking-interest hidden>
+              Quieres platicar de: <strong data-booking-interest-label></strong>
+            </p>
+          </div>
+          <div class="booking__card" data-booking-root>
+            <div class="booking__loading" data-booking-loading>
+              <svg viewBox="-2 14 102 88" aria-hidden="true">
+                <path data-symbol-stroke stroke-width="14" fill="none" />
+              </svg>
+              <p>Cargando horarios disponibles…</p>
+            </div>
+            <div class="booking__embed" id="agenda-embed" data-booking-embed></div>
+            <div class="booking__fallback" data-booking-fallback hidden>
+              <h3>Escríbeme y agendamos</h3>
+              <p data-booking-fallback-msg>Ahorita no pudimos mostrar el calendario. Escríbeme y te comparto horarios.</p>
+              <div class="booking__fallback-actions" data-booking-contacts></div>
+            </div>
+            <div class="booking__success" data-booking-success hidden>
+              <svg viewBox="-2 14 102 88" aria-hidden="true"><path data-symbol-stroke stroke-width="14" fill="none" /></svg>
+              <h3>¡Listo! Nos vemos pronto.</h3>
+              <p>Te mandé la confirmación a tu correo con la liga de la llamada.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PREGUNTAS ───────────────────────────────────────── -->
+      <section class="faq" id="preguntas" data-surface="light">
+        <div class="container faq__grid">
+          <header class="section-head">
+            <p class="eyebrow">[ 09 ] Preguntas</p>
+            <h2 class="section-title" data-reveal>Lo que suelen preguntarme.</h2>
+          </header>
+          <div class="faq__list">
+            <details class="faq__item" data-faq>
+              <summary>¿La llamada cuesta algo?</summary>
+              <div class="faq__body"><p>No. La primera llamada es gratis y no te compromete a nada. Sirve para conocernos y entender qué quieres cuidar.</p></div>
+            </details>
+            <details class="faq__item" data-faq>
+              <summary>¿Qué necesito para la llamada?</summary>
+              <div class="faq__body"><p>Quince minutos y una idea general de tus planes. No necesitas documentos ni saber nada del tema.</p></div>
+            </details>
+            <details class="faq__item" data-faq>
+              <summary>¿Por qué pensar en esto ahora?</summary>
+              <div class="faq__body"><p>Porque el precio depende de tu edad y tu salud de hoy. Si esperas a necesitarlo, normalmente ya es más caro o ya no se puede contratar para lo que pasó.</p></div>
+            </details>
+            <details class="faq__item" data-faq>
+              <summary>¿Lo que pago se puede deducir de impuestos?</summary>
+              <div class="faq__body"><p>En algunos casos sí, como las primas de gastos médicos mayores o las aportaciones a ciertos planes de retiro. Depende de tu situación fiscal, así que lo revisamos juntos.</p></div>
+            </details>
+            <details class="faq__item" data-faq>
+              <summary>¿Con qué aseguradora trabajas?</summary>
+              <div class="faq__body"><p>Con GNP. Puedo ayudarte con todo su portafolio: gastos médicos, vida, retiro, educación, coche, casa, mascotas y empresas.</p></div>
+            </details>
+            <details class="faq__item" data-faq>
+              <summary>¿Puedo cambiar el horario de la llamada?</summary>
+              <div class="faq__body"><p>Claro. En el correo de confirmación viene la liga para reprogramar o cancelar.</p></div>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER ────────────────────────────────────────────── -->
+    <footer class="footer band-dark" data-surface="dark">
+      <div class="container">
+        <a class="footer__big" href="#agenda" data-cursor="Agendar">
+          <span>Vivir es</span>
+          <span>increíble.</span>
+        </a>
+        <div class="footer__row">
+          <svg class="footer__logo" viewBox="-214 -16 1666 132" role="img" aria-label="Arturo Gallardo">
+            <path data-lockup-symbol fill="#e77c46" />
+            <path data-lockup-wordmark fill="#e77c46" />
+          </svg>
+          <nav class="footer__links" aria-label="Pie de página" data-footer-contacts>
+            <a href="#agenda">Agenda 15 min</a>
+          </nav>
+        </div>
+        <div class="footer__legal">
+          <p>© <span data-year>2026</span> Arturo Gallardo · Asesoría patrimonial GNP</p>
+          <p data-legal></p>
+          <p class="footer__disclaimer">
+            Información de carácter informativo. Las coberturas, sumas aseguradas y beneficios fiscales dependen del plan contratado y de sus condiciones generales. Productos de Grupo Nacional Provincial, S.A.B.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
