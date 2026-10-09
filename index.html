@@ -442,9 +442,24 @@
               <div class="booking__fallback-actions" data-booking-contacts></div>
             </div>
             <div class="booking__success" data-booking-success hidden>
-              <svg viewBox="-2 14 102 88" aria-hidden="true"><path data-symbol-stroke stroke-width="14" fill="none" /></svg>
-              <h3>¡Listo! Nos vemos pronto.</h3>
-              <p>Te mandé la confirmación a tu correo con la liga de la llamada.</p>
+              <div class="booking__burst" aria-hidden="true" data-booking-burst>
+                <svg viewBox="-2 14 102 88"><path data-symbol-stroke stroke-width="14" fill="none" /><path data-symbol-bar stroke-width="12" fill="none" /></svg>
+              </div>
+              <p class="booking__success-tag">Cita confirmada</p>
+              <h3>¡Qué gusto! Ya tenemos una cita.</h3>
+              <p class="booking__success-when" data-booking-when hidden></p>
+              <p>Me alegra que te des este tiempo para pensar en lo que quieres cuidar. Te llegó un correo con la liga de la videollamada, y desde ahí puedes cambiar el horario si lo necesitas.</p>
+              <div class="booking__prep">
+                <p>Para aprovechar los 15 minutos, ve pensando en:</p>
+                <ul>
+                  <li>Qué te gustaría proteger primero.</li>
+                  <li>Cuánto podrías destinar al mes, aunque sea un rango.</li>
+                </ul>
+              </div>
+              <p class="booking__success-wa" data-booking-success-wa-wrap hidden>
+                ¿Quieres contarme algo antes?
+                <a href="#" target="_blank" rel="noopener" data-booking-success-wa>Escríbeme por WhatsApp</a>
+              </p>
             </div>
           </div>
         </div>

@@ -119,3 +119,20 @@ export function contactLinks({ whatsapp, email } = {}, interest) {
   }
   return links;
 }
+
+/**
+ * Fecha de la cita para el mensaje de confirmación, en español de México:
+ * "jueves 15 de octubre a las 10:30 am". Devuelve null si la fecha no es válida.
+ */
+export function formatBookingWhen(iso, { timeZone, locale = 'es-MX' } = {}) {
+  const date = new Date(iso);
+  if (!iso || Number.isNaN(date.getTime())) return null;
+  const opts = timeZone ? { timeZone } : {};
+  const day = new Intl.DateTimeFormat(locale, { ...opts, weekday: 'long', day: 'numeric', month: 'long' }).format(date);
+  const parts = new Intl.DateTimeFormat(locale, { ...opts, hour: 'numeric', minute: '2-digit', hour12: true }).formatToParts(date);
+  const hm = parts.filter((p) => p.type === 'hour' || p.type === 'minute' || p.type === 'literal').map((p) => p.value).join('').trim();
+  const period = parts.find((p) => p.type === 'dayPeriod')?.value ?? '';
+  // Marca: am/pm en minúsculas y sin puntos ("10:30 am").
+  const ampm = /p/i.test(period) ? 'pm' : 'am';
+  return `${day.replace(',', '')} a las ${hm.replace(/\s+$/, '')} ${ampm}`;
+}

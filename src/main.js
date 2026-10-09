@@ -76,10 +76,10 @@ function initScroll() {
   gsap.ticker.lagSmoothing(0);
 }
 
-function scrollToTarget(target) {
+function scrollToTarget(target, offset = 0) {
   const el = typeof target === 'string' ? $(target) : target;
   if (!el) return;
-  if (lenis) lenis.scrollTo(el, { offset: 0, duration: 1.6, easing: (t) => 1 - Math.pow(1 - t, 4) });
+  if (lenis) lenis.scrollTo(el, { offset, duration: 1.6, easing: (t) => 1 - Math.pow(1 - t, 4) });
   else el.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
 }
 
@@ -481,13 +481,45 @@ function initBookingMotion() {
     }
   }
   document.addEventListener('booking:success', () => {
-    const path = $('.booking__success path');
-    if (path && !reducedMotion) {
-      prepStroke(path);
-      gsap.to(path, { strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut' });
-      gsap.from('.booking__success h3, .booking__success p', { y: 20, autoAlpha: 0, stagger: 0.1, delay: 0.5 });
-    }
-    ScrollTrigger.refresh();
+    const card = $('.booking__card');
+    // Llevar la tarjeta a la vista (en móvil el lead vuelve de la ventana de Cal.com).
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      lenis?.resize();
+      scrollToTarget(card, -($('[data-nav]').offsetHeight + 16));
+    });
+    if (reducedMotion) return;
+
+    // El monograma se dibuja de un trazo y suelta chispas de color: celebración breve.
+    const [stroke, bar] = $$('.booking__burst path');
+    prepStroke(stroke);
+    prepStroke(bar);
+    const burst = $('[data-booking-burst]');
+    const colors = ['#e77c46', '#feb797', '#925e51', '#2f404a'];
+    const dots = Array.from({ length: 16 }, (_, i) => {
+      const d = document.createElement('span');
+      d.className = 'burst-dot';
+      d.style.background = colors[i % colors.length];
+      burst.append(d);
+      return d;
+    });
+    const items = $$('.booking__success > :not(.booking__burst)');
+
+    gsap.timeline({ delay: 0.15 })
+      .to(stroke, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' })
+      .to(bar, { strokeDashoffset: 0, duration: 0.35, ease: 'power3.out' }, '-=0.15')
+      .fromTo(burst, { scale: 1 }, { scale: 1.12, duration: 0.18, ease: 'power2.out', yoyo: true, repeat: 1 }, '<')
+      .fromTo(dots, { x: 0, y: 0, scale: 1, autoAlpha: 1 }, {
+        x: (i) => Math.cos((i / dots.length) * Math.PI * 2) * (60 + (i % 3) * 22),
+        y: (i) => Math.sin((i / dots.length) * Math.PI * 2) * (60 + (i % 3) * 22),
+        scale: 0.3,
+        autoAlpha: 0,
+        duration: 1.1,
+        ease: 'expo.out',
+        onComplete: () => dots.forEach((d) => d.remove()),
+      }, '<')
+      // fromTo con valores explícitos: el texto siempre termina visible.
+      .fromTo(items, { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.08, ease: 'expo.out' }, 0.2);
   });
 
   // El iframe de Cal.com cambia de alto: mantener ScrollTrigger y Lenis al día.

@@ -2,6 +2,7 @@ import { SITE } from '../config.js';
 import {
   buildCalConfig,
   contactLinks,
+  formatBookingWhen,
   resolveBooking,
   trackingFromSearch,
 } from './booking-config.js';
@@ -76,11 +77,27 @@ function fail(message) {
   show(els.fallback, true);
 }
 
-function onBooked() {
+// Cal.com dispara `bookingSuccessful` y `bookingSuccessfulV2` para la misma cita:
+// solo la primera cuenta (antes corría dos veces y el mensaje quedaba transparente).
+function onBooked(e) {
+  if (state.done) return;
   state.done = true;
+  const data = e?.detail?.data ?? {};
+  const when = formatBookingWhen(data.startTime ?? data.booking?.startTime);
+  if (when) els.successWhen.textContent = `Nos vemos el ${when}.`;
+  show(els.successWhen, Boolean(when));
+
+  const wa = contactLinks(SITE.contact, state.interest).find((l) => l.kind === 'whatsapp');
+  if (wa) {
+    els.successWa.href = wa.href;
+    show(els.successWaWrap, true);
+  }
+
   show(els.loading, false);
   show(els.embed, false);
   show(els.fallback, false);
+  els.root.classList.remove('is-compact');
+  els.root.classList.add('is-booked');
   show(els.success, true);
   els.root.dispatchEvent(new CustomEvent('booking:success', { bubbles: true }));
   // Para medición (GA4 / GTM) si se agrega más adelante.
@@ -246,6 +263,9 @@ export function initBooking() {
     fallbackMsg: $('[data-booking-fallback-msg]'),
     contacts: $('[data-booking-contacts]'),
     success: $('[data-booking-success]'),
+    successWhen: $('[data-booking-when]'),
+    successWa: $('[data-booking-success-wa]'),
+    successWaWrap: $('[data-booking-success-wa-wrap]'),
     interest: $('[data-booking-interest]'),
     interestLabel: $('[data-booking-interest-label]'),
   };

@@ -508,6 +508,31 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   font-family: var(--font-display); font-weight: 600; text-transform: uppercase; letter-spacing: var(--track); font-size: 1.6rem;
 }
 .booking__fallback p, .booking__success p { color: var(--bi-text-muted); max-width: 36ch; margin: 0; }
+/* Cita confirmada: el panel deja de ser una capa y define el alto de la tarjeta. */
+.booking__card.is-booked { min-height: 0; }
+.booking__card.is-booked .booking__embed { display: none; }
+.booking__success {
+  position: relative; inset: auto;
+  justify-items: start; text-align: left; place-content: initial;
+  gap: .9rem; max-width: 46rem; margin-inline: auto;
+  padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 5vw, 3.5rem);
+}
+.booking__burst { position: relative; width: 84px; height: 76px; margin-bottom: .5rem; }
+.booking__burst svg { width: 100%; height: 100%; overflow: visible; }
+.booking__burst path { stroke: var(--naranja); }
+.booking__burst .burst-dot { position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; margin: -4.5px; border-radius: 50%; pointer-events: none; }
+.booking__success-tag { font-weight: 600; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--bi-link); margin: 0; }
+.booking__success h3 { font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.4rem); line-height: 1.1; color: var(--pizarra); }
+.booking__success .booking__success-when {
+  font-family: var(--font-display); font-weight: 600; font-size: clamp(1.05rem, 1rem + .4vw, 1.3rem);
+  color: var(--pizarra); background: var(--bi-surface-alt); border-radius: 10px; padding: .7rem 1rem; max-width: none;
+}
+.booking__success p { max-width: 52ch; }
+.booking__prep { width: 100%; border-top: 1px solid var(--bi-border); padding-top: 1rem; margin-top: .3rem; }
+.booking__prep p { margin: 0 0 .5rem; color: var(--pizarra); font-weight: 600; }
+.booking__prep ul { display: grid; gap: .35rem; padding-left: 1.2rem; list-style: disc; color: var(--bi-text-muted); }
+.booking__prep li::marker { color: var(--naranja); }
+.booking__success-wa a { color: var(--bi-link); font-weight: 600; }
 .booking__fallback-actions { display: flex; gap: .8rem; flex-wrap: wrap; justify-content: center; }
 
 /* ── Preguntas ───────────────────────────────────────────── */

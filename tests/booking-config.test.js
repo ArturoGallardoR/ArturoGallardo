@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildCalConfig,
   contactLinks,
+  formatBookingWhen,
   normalizeCalLink,
   resolveBooking,
   trackingFromSearch,
@@ -69,5 +70,21 @@ describe('contactLinks', () => {
     expect(links).toHaveLength(1);
     expect(links[0].href.startsWith('https://wa.me/5215512345678?text=')).toBe(true);
     expect(decodeURIComponent(links[0].href)).toContain('Ahorro y retiro');
+  });
+});
+
+describe('formatBookingWhen', () => {
+  it('muestra la cita en la hora local del lead, en español y con am/pm de marca', () => {
+    // 16:30 UTC = 10:30 en Ciudad de México
+    expect(formatBookingWhen('2026-10-15T16:30:00Z', { timeZone: 'America/Mexico_City' })).toBe('jueves 15 de octubre a las 10:30 am');
+  });
+
+  it('cambia de día cuando la zona horaria lo exige', () => {
+    expect(formatBookingWhen('2026-10-12T00:05:00Z', { timeZone: 'America/Mexico_City' })).toBe('domingo 11 de octubre a las 6:05 pm');
+  });
+
+  it('no inventa una fecha si Cal.com no la manda', () => {
+    expect(formatBookingWhen(undefined)).toBeNull();
+    expect(formatBookingWhen('no-es-fecha')).toBeNull();
   });
 });
