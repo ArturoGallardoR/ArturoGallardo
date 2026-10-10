@@ -1,4 +1,4 @@
-# Arturo Gallardo · Vivir es increíble
+# Arturo Gallardo · Vive con todo, sin pendientes
 
 Landing para agendar la primera llamada (15 min) con Arturo Gallardo, asesor patrimonial GNP.
 Basada en el Kit A de marca (`../brand-identity/arturo-gallardo/kit/A`).

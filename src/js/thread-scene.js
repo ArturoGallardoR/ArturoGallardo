@@ -17,19 +17,98 @@ const COLORS = {
 
 const smooth = (t) => t * t * (3 - 2 * t);
 
-function makeDotTexture() {
+/** Textura radial suave; `stops` = [[posición, alfa], ...]. */
+function makeGlowTexture(stops, size = 64) {
   const c = document.createElement('canvas');
-  c.width = c.height = 64;
+  c.width = c.height = size;
   const g = c.getContext('2d');
-  const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-  grad.addColorStop(0, 'rgba(255,255,255,1)');
-  grad.addColorStop(0.35, 'rgba(255,255,255,.55)');
-  grad.addColorStop(1, 'rgba(255,255,255,0)');
+  const r = size / 2;
+  const grad = g.createRadialGradient(r, r, 0, r, r, r);
+  for (const [at, a] of stops) grad.addColorStop(at, `rgba(255,255,255,${a})`);
   g.fillStyle = grad;
-  g.fillRect(0, 0, 64, 64);
+  g.fillRect(0, 0, size, size);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
+}
+
+const BEAM_VERTEX = /* glsl */ `
+  uniform float uWidth;     // radio en px de pantalla (CSS)
+  uniform float uPxToWorld; // unidades de mundo por px a profundidad 1
+  uniform float uBase;      // radio con que se construyó el tubo
+  varying float vU;
+  varying float vNdv;
+  varying float vDepth;
+  void main() {
+    vec3 center = position - normal * uBase;
+    float depth = -(modelViewMatrix * vec4(center, 1.0)).z;
+    vec4 mv = modelViewMatrix * vec4(center + normal * (uWidth * uPxToWorld * depth), 1.0);
+    vec3 n = normalize(normalMatrix * normal);
+    vNdv = abs(dot(n, normalize(-mv.xyz)));
+    vU = uv.x;
+    vDepth = depth;
+    gl_Position = projectionMatrix * mv;
+  }
+`;
+
+const BEAM_FRAGMENT = /* glsl */ `
+  uniform float uProgress;  // hasta dónde va el trazo (0–1 de su longitud)
+  uniform float uLength;    // longitud total en unidades de mundo
+  uniform float uFalloff;   // qué tan concentrada está la luz al centro
+  uniform float uIntensity;
+  uniform float uHot;       // brillo extra cerca de la punta
+  uniform float uHeat;      // 0 cuando el trazo ya terminó
+  uniform float uShimmer;
+  uniform float uTime;
+  uniform float uFogNear;
+  uniform float uFogFar;
+  uniform vec3 uColor;
+  uniform vec3 uHotColor;
+  varying float vU;
+  varying float vNdv;
+  varying float vDepth;
+  void main() {
+    float d = (uProgress - vU) * uLength; // distancia detrás de la punta
+    if (d < 0.0) discard;
+    // Perfil gaussiano a lo ancho: centro brillante, borde que se disuelve.
+    float x2 = 1.0 - vNdv * vNdv;
+    float e = exp(-uFalloff);
+    float profile = (exp(-x2 * uFalloff) - e) / (1.0 - e);
+    float hot = exp(-d / 6.0) * uHeat;
+    float tip = smoothstep(0.0, 0.4, d);
+    float pulse = 1.0 + uShimmer * sin(d * 0.8 + uTime * 2.2);
+    float fog = 1.0 - smoothstep(uFogNear, uFogFar, vDepth);
+    float a = profile * uIntensity * (1.0 + uHot * hot) * tip * pulse * fog;
+    gl_FragColor = vec4(mix(uColor, uHotColor, hot), clamp(a, 0.0, 1.0));
+    #include <colorspace_fragment>
+  }
+`;
+
+function makeBeamMaterial({ width, falloff, intensity, hot, color, hotColor, length, base }) {
+  return new THREE.ShaderMaterial({
+    uniforms: {
+      uWidth: { value: width },
+      uPxToWorld: { value: 0.001 },
+      uBase: { value: base },
+      uProgress: { value: 0 },
+      uLength: { value: length },
+      uFalloff: { value: falloff },
+      uIntensity: { value: intensity },
+      uHot: { value: hot },
+      uHeat: { value: 1 },
+      uShimmer: { value: 0 },
+      uTime: { value: 0 },
+      uFogNear: { value: 40 },
+      uFogFar: { value: 110 },
+      uColor: { value: new THREE.Color(color) },
+      uHotColor: { value: new THREE.Color(hotColor) },
+    },
+    vertexShader: BEAM_VERTEX,
+    fragmentShader: BEAM_FRAGMENT,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
 }
 
 export function supportsWebGL() {
@@ -54,16 +133,6 @@ export function createThreadScene(canvas, { reducedMotion = false } = {}) {
   scene.fog = new THREE.Fog(COLORS.pizarra, 24, 90);
   const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 300);
 
-  // Luces cálidas, como luz natural de tarde.
-  scene.add(new THREE.HemisphereLight(COLORS.arena, COLORS.pizarra, 1.1));
-  const key = new THREE.DirectionalLight(0xfff1e4, 2.2);
-  key.position.set(8, 14, 16);
-  scene.add(key);
-  const rim = new THREE.DirectionalLight(COLORS.durazno, 1.3);
-  rim.position.set(-12, -4, -10);
-  scene.add(rim);
-
-  // ── El hilo ─────────────────────────────────────────────
   const { points, segments } = buildThreadPoints();
   const curve = new THREE.CatmullRomCurve3(points.map((p) => new THREE.Vector3(...p)), false, 'centripetal', 0.5);
 
@@ -75,39 +144,52 @@ export function createThreadScene(canvas, { reducedMotion = false } = {}) {
   const ranges = segments.map((s) => ({ ...s, start: uAt(s.start), end: uAt(s.end) }));
   const stops = chapterStops(ranges);
 
+  // ── El hilo: un haz de luz fino ─────────────────────────
+  // Una sola geometría de tubo y dos materiales aditivos: un núcleo caliente
+  // y un halo suave. El grosor se calcula en píxeles de pantalla dentro del
+  // shader, así la línea se ve igual de fina de cerca y de lejos.
   const TUBULAR = isSmall ? 1700 : 3200;
-  const RADIAL = isSmall ? 8 : 12;
-  const RADIUS = 0.42;
-  const tubeGeo = new THREE.TubeGeometry(curve, TUBULAR, RADIUS, RADIAL, false);
-  const tubeMat = new THREE.MeshStandardMaterial({ color: COLORS.naranja, roughness: 0.42, metalness: 0.08 });
-  scene.add(new THREE.Mesh(tubeGeo, tubeMat));
-  const indexPerSegment = RADIAL * 6;
-  tubeGeo.setDrawRange(0, 0);
+  const RADIAL = isSmall ? 8 : 10;
+  const BASE_RADIUS = 0.01;
+  const tubeGeo = new THREE.TubeGeometry(curve, TUBULAR, BASE_RADIUS, RADIAL, false);
 
-  // Travesaño de la A (aparece al cerrar el monograma).
+  const coreMat = makeBeamMaterial({
+    width: 1.2, falloff: 2.2, intensity: 0.95, hot: 0.9,
+    color: COLORS.durazno, hotColor: 0xfff6ec, length: total, base: BASE_RADIUS,
+  });
+  const glowMat = makeBeamMaterial({
+    width: isSmall ? 8 : 11, falloff: 4, intensity: 0.5, hot: 0.8,
+    color: COLORS.naranja, hotColor: COLORS.durazno, length: total, base: BASE_RADIUS,
+  });
+  const beamMats = [coreMat, glowMat];
+  scene.add(new THREE.Mesh(tubeGeo, glowMat), new THREE.Mesh(tubeGeo, coreMat));
+
+  // Travesaño de la A: se traza de izquierda a derecha al cerrar el monograma.
   const [b0, b1] = AG_BAR;
+  const barLen = b1[0] - b0[0];
   const barGeo = new THREE.TubeGeometry(
-    new THREE.LineCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(b1[0] - b0[0], 0, 0)), 8, RADIUS * 0.9, RADIAL, false,
+    new THREE.LineCurve3(new THREE.Vector3(b0[0], b0[1], 0), new THREE.Vector3(b1[0], b1[1], 0)), 24, BASE_RADIUS, RADIAL, false,
   );
-  const bar = new THREE.Mesh(barGeo, tubeMat);
-  bar.position.set(b0[0], b0[1], 0);
-  bar.scale.set(0.0001, 1, 1);
+  const barCore = coreMat.clone();
+  const barGlow = glowMat.clone();
+  const barMats = [barCore, barGlow];
+  for (const mat of barMats) mat.uniforms.uLength.value = barLen;
+  const bar = new THREE.Group();
+  bar.add(new THREE.Mesh(barGeo, barGlow), new THREE.Mesh(barGeo, barCore));
   scene.add(bar);
 
-  // La chispa: la punta viva del trazo.
-  const dotTex = makeDotTexture();
-  const head = new THREE.Mesh(
-    new THREE.SphereGeometry(RADIUS * 1.04, 24, 16),
-    new THREE.MeshStandardMaterial({ color: COLORS.durazno, emissive: COLORS.naranja, emissiveIntensity: 1.4, roughness: 0.3 }),
-  );
-  scene.add(head);
-  const headLight = new THREE.PointLight(COLORS.naranja, 30, 14, 2);
-  scene.add(headLight);
-  const glow = new THREE.Sprite(new THREE.SpriteMaterial({
-    map: dotTex, color: COLORS.durazno, transparent: true, opacity: 0.85, depthWrite: false, blending: THREE.AdditiveBlending,
+  // La chispa: la punta viva del trazo (núcleo, halo y un destello horizontal muy tenue).
+  const dotTex = makeGlowTexture([[0, 1], [0.35, 0.55], [1, 0]], 128);
+  const sparkTex = makeGlowTexture([[0, 1], [0.12, 0.8], [0.3, 0.18], [1, 0]]);
+  const sprite = (map, color, opacity) => new THREE.Sprite(new THREE.SpriteMaterial({
+    map, color, transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending, fog: false,
   }));
-  glow.scale.setScalar(3.6);
-  scene.add(glow);
+  const head = new THREE.Group();
+  const spark = sprite(sparkTex, 0xfff3e6, 1);
+  const glow = sprite(dotTex, COLORS.naranja, 0.45);
+  const flare = sprite(sparkTex, COLORS.durazno, 0.22);
+  head.add(glow, flare, spark);
+  scene.add(head);
 
   // Halo detrás de cada símbolo terminado: se "enciende" al cerrarse el dibujo.
   const halos = ranges.map((r) => {
@@ -138,10 +220,11 @@ export function createThreadScene(canvas, { reducedMotion = false } = {}) {
   const motesGeo = new THREE.BufferGeometry();
   motesGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
   motesGeo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  scene.add(new THREE.Points(motesGeo, new THREE.PointsMaterial({
+  const motesMat = new THREE.PointsMaterial({
     size: 0.22, map: dotTex, vertexColors: true, transparent: true, opacity: 0.75,
     depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
-  })));
+  });
+  scene.add(new THREE.Points(motesGeo, motesMat));
 
   // ── Cámara: encuadra cada símbolo de frente mientras se dibuja ──
   let poses = [];
@@ -185,6 +268,10 @@ export function createThreadScene(canvas, { reducedMotion = false } = {}) {
   let raf = 0;
   let last = performance.now();
   let elapsed = 0;
+  let pxToWorld = 0.001;
+  // Con movimiento reducido la luz no titila ni respira.
+  const breathe = reducedMotion ? 0 : 1;
+  for (const mat of beamMats) mat.uniforms.uShimmer.value = 0.07 * breathe;
 
   function resize() {
     const { clientWidth: w, clientHeight: h } = canvas;
@@ -202,6 +289,12 @@ export function createThreadScene(canvas, { reducedMotion = false } = {}) {
     distance = THREE.MathUtils.clamp(6.8 / (halfTan * camera.aspect * usable), 16, 44);
     scene.fog.near = distance + 6;
     scene.fog.far = distance + 70;
+    pxToWorld = (2 * halfTan) / h;
+    for (const mat of [...beamMats, ...barMats]) {
+      mat.uniforms.uPxToWorld.value = pxToWorld;
+      mat.uniforms.uFogNear.value = scene.fog.near;
+      mat.uniforms.uFogFar.value = scene.fog.far + 30;
+    }
     buildPoses();
   }
 
@@ -214,26 +307,30 @@ export function createThreadScene(canvas, { reducedMotion = false } = {}) {
     progress += (target - progress) * Math.min(1, dt * 4.5);
     const p = THREE.MathUtils.clamp(progress, 0, 1);
 
-    tubeGeo.setDrawRange(0, Math.floor(p * TUBULAR) * indexPerSegment);
+    const done = THREE.MathUtils.smoothstep(p, 0.985, 0.998);
+    for (const mat of beamMats) {
+      mat.uniforms.uProgress.value = p;
+      mat.uniforms.uHeat.value = 1 - done;
+      mat.uniforms.uTime.value = elapsed;
+    }
 
     const u = Math.max(0.0005, p);
-    curve.getPointAt(u, tmpPos);
-    head.position.copy(tmpPos);
-    headLight.position.copy(tmpPos);
-    glow.position.copy(tmpPos);
-    glow.scale.setScalar(3.6 * (1 + Math.sin(elapsed * 3) * 0.08));
-    head.visible = glow.visible = p < 0.995;
+    curve.getPointAt(u, head.position);
+    head.visible = done < 0.999;
 
     // Halos: se encienden al cerrar cada símbolo y respiran suave.
     ranges.forEach((r, i) => {
       const on = THREE.MathUtils.smoothstep(p, r.end - 0.004, r.end + 0.012);
-      halos[i].material.opacity = on * (0.22 + Math.sin(elapsed * 1.6 + i) * 0.05);
+      halos[i].material.opacity = on * (0.16 + breathe * Math.sin(elapsed * 1.6 + i) * 0.04);
     });
 
     const ag = ranges[ranges.length - 1];
     const barT = THREE.MathUtils.smoothstep(p, ag.end - 0.01, Math.min(1, ag.end + 0.02));
     bar.visible = barT > 0.001;
-    bar.scale.set(Math.max(0.0001, barT), 1, 1);
+    for (const mat of barMats) {
+      mat.uniforms.uProgress.value = barT;
+      mat.uniforms.uHeat.value = 1 - THREE.MathUtils.smoothstep(barT, 0.8, 1);
+    }
 
     // Cámara.
     poseAt(p, tmpPos, tmpLook);
@@ -246,6 +343,17 @@ export function createThreadScene(canvas, { reducedMotion = false } = {}) {
     camLook.lerp(tmpLook, k);
     camera.position.copy(camPos);
     camera.lookAt(camLook);
+
+    // La chispa mide lo mismo en pantalla a cualquier distancia.
+    if (head.visible) {
+      const px = pxToWorld * camera.position.distanceTo(head.position);
+      const flicker = 1 + breathe * Math.sin(elapsed * 3.1) * 0.06;
+      const fade = 1 - done;
+      spark.scale.setScalar(px * 22 * flicker * fade);
+      glow.scale.setScalar(px * (isSmall ? 80 : 110) * flicker);
+      flare.scale.set(px * (isSmall ? 110 : 170) * fade, px * 7, 1);
+      glow.material.opacity = 0.45 * fade;
+    }
 
     // Motas que suben, lentas.
     const arr = motesGeo.attributes.position.array;
@@ -301,10 +409,11 @@ export function createThreadScene(canvas, { reducedMotion = false } = {}) {
       ro.disconnect();
       io.disconnect();
       window.removeEventListener('pointermove', onPointer);
+      for (const geo of [tubeGeo, barGeo, motesGeo]) geo.dispose();
+      for (const mat of [...beamMats, ...barMats, motesMat, spark.material, glow.material, flare.material, ...halos.map((h) => h.material)]) mat.dispose();
+      dotTex.dispose();
+      sparkTex.dispose();
       renderer.dispose();
-      tubeGeo.dispose();
-      barGeo.dispose();
-      motesGeo.dispose();
     },
   };
 }

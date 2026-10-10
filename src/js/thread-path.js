@@ -17,6 +17,7 @@ function arc(out, cx, cy, r, a0, a1, n) {
 function heart(out, cx, cy, s, n) {
   // Curva clásica del corazón, empezando y terminando en la punta inferior.
   for (let i = 1; i <= n; i++) {
+    if (2 * i === n) continue; // sin el punto exacto de la hendidura: la luz la dobla redondeada, sin quiebre
     const t = Math.PI + (TAU * i) / n;
     const x = (16 * Math.sin(t) ** 3) / 17;
     const y = (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) / 17;
